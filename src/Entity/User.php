@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -18,6 +19,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: "Le nom d'utilisateur est obligatoire")]
+    #[Assert\Length(min: 5, max: 180, minMessage: "Le nom d'utilisateur doit faire au moins {{ limit }} caractères", maxMessage: "Le nom d'utilisateur ne peut pas faire plus de {{ limit }} caractères")]
     private ?string $username = null;
 
     /**
@@ -30,9 +33,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le mot de passe est obligatoire")]
+    #[Assert\Length(min: 5, max: 180, minMessage: "Le mot de passe doit faire au moins {{ limit }} caractères", maxMessage: "Le mot de passe ne peut pas faire plus de {{ limit }} caractères")]
     private ?string $password = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le code postal est obligatoire")]
+    #[Assert\Regex('/^((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B)) *([0-9]{3})?$/', message: 'Code postal incorrect')]
     private ?int $zipcode = null;
 
     public function getId(): ?int
