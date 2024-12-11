@@ -10,8 +10,12 @@ use Doctrine\Persistence\ObjectManager;
 class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
-    {
-        ArticleFactory::createMany(50);
+    {   
+        
         UserFactory::createMany(10);
+        ArticleFactory::createMany(50);
+
+        $manager->flush();
+
     }
 }

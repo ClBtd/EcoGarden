@@ -32,8 +32,8 @@ final class ArticleFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'content' => self::faker()->text(500),
-            'month' => self::faker()->numberBetween(1, 12),
+            'content' => self::faker()->text(),
+            'months' => [self::faker()->numberBetween(1, 12), self::faker()->numberBetween(1, 12), self::faker()->numberBetween(1, 12)]
         ];
     }
 

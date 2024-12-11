@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,10 +22,8 @@ class Article
     #[Assert\Length(min: 10, minMessage: "L'article doit faire au moins {{ limit }} caractères")]
     private ?string $content = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\NotBlank(message: "L'article doit avoir un contenu.'")]
-    #[Assert\Range(min:1, max:12, notInRangeMessage:"Le mois doit être indiqué par un nombre compris entre 1 et 12.")]
-    private ?int $month = null;
+    #[ORM\Column(nullable: true)]
+    private ?array $months = null;
 
     public function getId(): ?int
     {
@@ -42,15 +42,16 @@ class Article
         return $this;
     }
 
-    public function getMonth(): ?int
+    public function getMonths(): ?array
     {
-        return $this->month;
+        return $this->months;
     }
 
-    public function setMonth(int $month): static
+    public function setMonths(?array $months): static
     {
-        $this->month = $month;
+        $this->months = $months;
 
         return $this;
     }
+
 }
