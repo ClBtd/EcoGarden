@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,6 +21,10 @@ class Article
     private ?string $content = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\All([
+        new Assert\Type(type: 'integer', message: 'Le mois doit être indiqué au format numérique.'),
+        new Assert\Range(min: 1, max: 12, notInRangeMessage: 'Le nombre indiqué doit être compris entre 1 et 12.'),
+    ])]
     private ?array $months = null;
 
     public function getId(): ?int

@@ -33,6 +33,30 @@ class UserController extends AbstractController
         return new JsonResponse(null, Response::HTTP_CREATED);
     }
 
+    #[Route('/user/{id}', name:"updateUser", methods:['PUT'])]
+    #[IsGranted('ROLE_ADMIN', message:'Vous devez être administrateur.ice pour accéder à cette page.')]
+    public function updateUser(Request $request, User $updatedUser, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): JsonResponse 
+    {
+        $content = $request->toArray();
+
+        if (isset($content['username'])) {
+            $updatedUser->setUsername($content['username']);
+        }
+        if (isset($content['months'])) {
+            $updatedUser->setPassword($userPasswordHasher->hashPassword($updatedUser, $content['password']));
+        }
+        if (isset($content['roles'])) {
+            $updatedUser->setRoles($content['roles']);
+        }
+        if (isset($content['zipcode'])) {
+            $updatedUser->setZipcode($content['zipcode']);
+        }
+        
+        $em->persist($updatedUser);
+        $em->flush();
+        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+   }
+
     #[Route('/user/{id}', name: 'deleteUser', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message:'Vous devez être administrateur.ice pour accéder à cette page.')]
      public function deleteArticle(?User $user, EntityManagerInterface $em): JsonResponse {
