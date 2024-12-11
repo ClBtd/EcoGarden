@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ArticleController extends AbstractController
 {
-    #[Route('conseil', name: 'conseil', methods: ['GET'])]
+    #[Route('api/conseil', name: 'api_conseil', methods: ['GET'])]
     #[Route('conseil/{mois}', name: 'api_conseil_mois', requirements: ['mois' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER', message:'Vous devez être connectés pour accéder à cette page.')]
     public function getMonthArticles(?int $mois = null, ArticleRepository $articleRepository, SerializerInterface $serializer): JsonResponse
@@ -34,7 +34,7 @@ class ArticleController extends AbstractController
         return new JsonResponse($jsonMonthArticles, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/conseil', name: 'creationConseil')]
+    #[Route('api/conseil', name: 'api_creationConseil')]
     #[IsGranted('ROLE_ADMIN', message:'Vous devez être administrateur.ice pour accéder à cette page.')]
     public function createArticle(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse 
     {
@@ -50,7 +50,7 @@ class ArticleController extends AbstractController
         return new JsonResponse(null, Response::HTTP_CREATED);
     }
 
-    #[Route('/conseil/{id}', name:"modificationConseil", methods:['PUT'])]
+    #[Route('api/conseil/{id}', name:"api_modificationConseil", methods:['PUT'])]
     #[IsGranted('ROLE_ADMIN', message:'Vous devez être administrateur.ice pour accéder à cette page.')]
     public function updateArticle(Request $request, Article $updatedArticle, EntityManagerInterface $em): JsonResponse 
     {
@@ -68,7 +68,7 @@ class ArticleController extends AbstractController
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
    }
 
-    #[Route('/conseil/{id}', name: 'suppressionConseil', methods: ['DELETE'])]
+    #[Route('api/conseil/{id}', name: 'api_suppressionConseil', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message:'Vous devez être administrateur.ice pour accéder à cette page.')]
      public function deleteArticle(?Article $article, EntityManagerInterface $em): JsonResponse {
  

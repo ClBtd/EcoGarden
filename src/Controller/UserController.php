@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
-    #[Route('/user', name: 'app_user')]
+    #[Route('api/user', name: 'api_user')]
     public function createUser(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher, ValidatorInterface $validator): JsonResponse 
     {
 
@@ -33,7 +33,7 @@ class UserController extends AbstractController
         return new JsonResponse(null, Response::HTTP_CREATED);
     }
 
-    #[Route('/user/{id}', name:"updateUser", methods:['PUT'])]
+    #[Route('api/user/{id}', name:"api_updateUser", methods:['PUT'])]
     #[IsGranted('ROLE_ADMIN', message:'Vous devez être administrateur.ice pour accéder à cette page.')]
     public function updateUser(Request $request, User $updatedUser, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): JsonResponse 
     {
