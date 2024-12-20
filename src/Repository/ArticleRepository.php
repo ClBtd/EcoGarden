@@ -17,7 +17,7 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
         /**
-         * @return Article[] Returns an array of Article objects 
+         * @return Article[] Retourne un tableau d'articles correspondant à un mois 
          */
         public function findMonthArticles($month): array
         {

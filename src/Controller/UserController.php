@@ -19,14 +19,17 @@ class UserController extends AbstractController
     #[Route('api/user', name: 'api_user')]
     public function createUser(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher, ValidatorInterface $validator): JsonResponse 
     {
-
+        // Désérialization des données envoyées par l'utilisateur et validation
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
         $errors = $validator->validate($user);
         if ($errors->count() > 0) {
             return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
+
+        // Ajout des rôles et hachage du mot de passe
         $user = $user->setRoles(['ROLE_USER']);
         $user = $user->setPassword($userPasswordHasher->hashPassword($user, $user->getPassword())); 
+        
         $em->persist($user);
         $em->flush();
 
@@ -37,8 +40,10 @@ class UserController extends AbstractController
     #[IsGranted('ROLE_ADMIN', message:'Vous devez être administrateur.ice pour accéder à cette page.')]
     public function updateUser(Request $request, User $updatedUser, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): JsonResponse 
     {
+        // Récupération des données envoyées par l'utilisateur
         $content = $request->toArray();
 
+        // Modifications des données entrées par l'utilisateur uniquement
         if (isset($content['username'])) {
             $updatedUser->setUsername($content['username']);
         }

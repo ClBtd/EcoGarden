@@ -10,10 +10,17 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
+    /**
+     * Récupère les exceptions pour les transformer en réponse JSON.
+     *
+     * @param ExceptionEvent $event
+     */
     public function onKernelException(ExceptionEvent $event): void
     {
+        // Récupération de l'exception qui a declenché l'évènement
         $exception = $event->getThrowable();
 
+        // On vérifie si c'est une exception HTTP et on en retourne le code et le message
         if ($exception instanceof HttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
@@ -21,7 +28,9 @@ class ExceptionSubscriber implements EventSubscriberInterface
             ];
 
             $event->setResponse(new JsonResponse($data));
-      } else {
+        } 
+        // Sinon on retourne une erreur de serveur 500
+        else {
             $data = [
                 'status' => 500, 
                 'message' => $exception->getMessage()

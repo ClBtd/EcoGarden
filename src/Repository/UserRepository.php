@@ -48,6 +48,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //        ;
     //    }
 
+    /**
+    * @return User Retourne un utilisateur via son nom d'utilisateur 
+    */
     public function getUserByName($name): ?User
     {
         return $this->createQueryBuilder('u')

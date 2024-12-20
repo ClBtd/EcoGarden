@@ -23,10 +23,12 @@ class ArticleController extends AbstractController
     #[IsGranted('ROLE_USER', message:'Vous devez être connectés pour accéder à cette page.')]
     public function getMonthArticles(?int $mois = null, ArticleRepository $articleRepository, SerializerInterface $serializer): JsonResponse
     {
+        // Récupération du mois en cours si aucun mois n'est indiqué.
         if (!$mois) {
             $mois = (int) (new DateTime('now', new DateTimeZone('Europe/Paris')))->format('n');
         }
-    
+        
+        // Récupération et sérialization des données pour le mois
         $monthArticles = $articleRepository->findMonthArticles($mois);
         $jsonMonthArticles = $serializer->serialize($monthArticles, 'json');
 
@@ -38,11 +40,13 @@ class ArticleController extends AbstractController
     public function createArticle(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator): JsonResponse 
     {
 
+        // Désérialization des données envoyées par l'utilisateur et validation
         $article = $serializer->deserialize($request->getContent(), Article::class, 'json');
         $errors = $validator->validate($article);
         if ($errors->count() > 0) {
             return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
+
         $em->persist($article);
         $em->flush();
 
@@ -53,8 +57,10 @@ class ArticleController extends AbstractController
     #[IsGranted('ROLE_ADMIN', message:'Vous devez être administrateur.ice pour accéder à cette page.')]
     public function updateArticle(Request $request, Article $updatedArticle, EntityManagerInterface $em): JsonResponse 
     {
+        // Récupération des données envoyées par l'utilisateur
         $content = $request->toArray();
 
+        // Modifications des données entrées par l'utilisateur uniquement
         if (isset($content['content'])) {
             $updatedArticle->setContent($content['content']);
         }
